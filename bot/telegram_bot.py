@@ -60,6 +60,13 @@ class TelegramBot:
         # Message handler
         self.application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, self.message_handler))
     
+    async def safe_reply(self, update: Update, text: str, **kwargs):
+        """Reply safely, whether message or callback query"""
+        if update.message:
+            await update.message.reply_text(text, **kwargs)
+        elif update.callback_query and update.callback_query.message:
+            await update.callback_query.message.reply_text(text, **kwargs)
+    
     async def start_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Handle /start command"""
         user = update.effective_user
@@ -92,11 +99,7 @@ Send me a TikTok URL to start sending views!
         
         reply_markup = InlineKeyboardMarkup(keyboard)
         
-        await update.message.reply_text(
-            welcome_message,
-            parse_mode="Markdown",
-            reply_markup=reply_markup
-        )
+        await self.safe_reply(update, welcome_message, parse_mode="Markdown", reply_markup=reply_markup)
     
     async def help_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Handle /help command"""
@@ -122,12 +125,12 @@ Send me a TikTok URL to start sending views!
 *Note:* Use dummy accounts only!
         """
         
-        await update.message.reply_text(help_text, parse_mode="Markdown")
+        await self.safe_reply(update, help_text, parse_mode="Markdown")
     
     async def stats_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Handle /stats command"""
         if not self.engine:
-            await update.message.reply_text("❌ Engine not initialized")
+            await self.safe_reply(update, "❌ Engine not initialized")
             return
         
         stats = self.engine.get_stats()
@@ -143,11 +146,12 @@ Send me a TikTok URL to start sending views!
 *Status:* {'🟢 Running' if stats['running'] else '🔴 Stopped'}
         """
         
-        await update.message.reply_text(stats_text, parse_mode="Markdown")
+        await self.safe_reply(update, stats_text, parse_mode="Markdown")
     
     async def test_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Handle /test command"""
-        await update.message.reply_text(
+        await self.safe_reply(
+            update,
             "🎬 Please send me the TikTok video URL you want to send views to:",
             parse_mode="Markdown"
         )
@@ -155,16 +159,20 @@ Send me a TikTok URL to start sending views!
     
     async def message_handler(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Handle regular messages"""
-        text = update.message.text
-        
+        text = update.message.text if update.message else ""
+
         if context.user_data.get('awaiting_url'):
             # User is sending URL
             await self.handle_url_input(update, context, text)
+        elif context.user_data.get('awaiting_count'):
+            # User is sending view count
+            await self.handle_view_count(update, context, text)
         elif 'tiktok.com' in text.lower():
             # User sent a TikTok URL directly
             await self.handle_tiktok_url(update, context, text)
         else:
-            await update.message.reply_text(
+            await self.safe_reply(
+                update,
                 "❓ I didn't understand that. Send /help for instructions.",
                 parse_mode="Markdown"
             )
@@ -175,17 +183,35 @@ Send me a TikTok URL to start sending views!
         context.user_data['awaiting_url'] = False
         context.user_data['awaiting_count'] = True
         
-        await update.message.reply_text(
+        await self.safe_reply(
+            update,
             "🔢 How many views do you want to send? (Max: 10,000)",
             parse_mode="Markdown"
         )
     
+    async def handle_view_count(self, update: Update, context: ContextTypes.DEFAULT_TYPE, count_text: str):
+        """Handle view count input"""
+        try:
+            count = int(count_text)
+            if count < 1 or count > 10000:
+                raise ValueError
+            context.user_data['view_count'] = count
+            context.user_data['awaiting_count'] = False
+
+            # এখন তুমি engine থেকে view send করতে পারো
+            await self.safe_reply(update, f"✅ Sending {count} views to your TikTok video now!")
+            # উদাহরণ: await self.engine.send_views(context.user_data['url'], count)
+
+        except ValueError:
+            await self.safe_reply(update, "❌ Invalid number. Please send a number between 1 and 10,000.")
+
     async def handle_tiktok_url(self, update: Update, context: ContextTypes.DEFAULT_TYPE, url: str):
         """Handle TikTok URL directly"""
         context.user_data['url'] = url
         context.user_data['awaiting_count'] = True
         
-        await update.message.reply_text(
+        await self.safe_reply(
+            update,
             f"✅ URL received!\n\n🔢 How many views do you want to send to this video? (Max: 10,000)",
             parse_mode="Markdown"
         )
@@ -204,7 +230,7 @@ Send me a TikTok URL to start sending views!
         elif data == "help":
             await self.help_command(update, context)
         elif data == "settings":
-            await query.edit_message_text("⚙️ Settings menu coming soon!")
+            await self.safe_reply(update, "⚙️ Settings menu coming soon!")
     
     async def run(self):
         """Run the bot"""
