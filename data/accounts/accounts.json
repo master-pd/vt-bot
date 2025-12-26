@@ -1,1 +1,14 @@
-
+[
+  {
+    "username": "dummy_account1",
+    "password": "password123",
+    "status": "active",
+    "notes": "Test account 1"
+  },
+  {
+    "username": "dummy_account2", 
+    "password": "password456",
+    "status": "active",
+    "notes": "Test account 2"
+  }
+]
