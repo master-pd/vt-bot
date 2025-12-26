@@ -1,0 +1,64 @@
+{
+  "bot_settings": {
+    "auto_start": true,
+    "auto_update_proxies": true,
+    "auto_create_accounts": false,
+    "max_threads": 10,
+    "save_logs": true,
+    "save_screenshots": false,
+    "debug_mode": false
+  },
+  "view_settings": {
+    "default_views": 100,
+    "min_views": 10,
+    "max_views": 1000,
+    "views_per_minute": 20,
+    "randomize_views": true,
+    "gradual_increase": true
+  },
+  "proxy_settings": {
+    "use_proxies": true,
+    "proxy_type": "http",
+    "rotate_proxies": true,
+    "proxy_timeout": 10,
+    "max_proxies": 100,
+    "auto_scrape": true
+  },
+  "account_settings": {
+    "max_accounts_per_ip": 3,
+    "account_rotation": true,
+    "save_cookies": true,
+    "use_temp_accounts": true,
+    "account_cooldown": 3600
+  },
+  "method_settings": {
+    "primary_method": "browser_human",
+    "fallback_method": "api_direct",
+    "use_multiple_methods": true,
+    "method_rotation": true,
+    "success_threshold": 70
+  },
+  "verification_settings": {
+    "verify_views": true,
+    "verification_delay": 300,
+    "screenshot_verification": true,
+    "ocr_verification": true,
+    "manual_verification": false
+  },
+  "safety_settings": {
+    "human_behavior": true,
+    "random_delays": true,
+    "mouse_movements": true,
+    "scroll_simulation": true,
+    "avoid_detection": true,
+    "cooldown_periods": true
+  },
+  "notification_settings": {
+    "telegram_notifications": false,
+    "telegram_bot_token": "",
+    "telegram_chat_id": "",
+    "email_notifications": false,
+    "email_address": "",
+    "desktop_notifications": true
+  }
+}
