@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  vt-view-tester:
+    build: .
+    container_name: vt-view-tester
+    restart: unless-stopped
+    volumes:
+      - ./data:/app/data
+      - ./config.py:/app/config.py:ro
+    environment:
+      - TZ=UTC
+    # For terminal mode
+    # stdin_open: true
+    # tty: true

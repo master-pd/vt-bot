@@ -1,0 +1,108 @@
+
+## **25. .gitignore** - Git Ignore File
+```gitignore
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+data/logs/*.log
+!data/logs/.gitkeep
+
+# Data files (except configs)
+data/accounts/*.json
+data/proxies/*.json
+data/sessions/*
+data/cache/*
+data/analytics/*
+data/backups/*
+
+# Config files (keep structure but not content)
+data/config/encryption.key
+data/config/encryption.salt
+data/config/notifications.json
+
+# Session data
+*.session
+*.cookies
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+
+# Security
+secrets.py
+config.ini
+*.pem
+*.key
+*.crt
+
+# Database
+*.db
+*.sqlite
+*.db-journal
+
+# Backup files
+*.bak
+*.backup
+
+# Test files
+test*.py
+tests/
+
+# Coverage
+.coverage
+htmlcov/
+
+# Output
+output/
+results/
+exports/
+
+# Project specific
+.user_agents.txt
+.fingerprints.json
