@@ -7,8 +7,8 @@ undetected-chromedriver==3.5.4
 webdriver-manager==4.0.1
 
 # HTTP Requests
-requests==2.31.0
-aiohttp==3.9.1
+requests==2.32.4
+aiohttp==3.12.14
 httpx==0.25.1
 
 # Async
